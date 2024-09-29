@@ -28,4 +28,9 @@ neg = 'Ctrl'
 DEG = do.call(rbind, lapply(neg, function(n) 
   do.call(rbind, lapply(setdiff(unique(obj$groups), n), function(g) Seurat.DEG(obj, g, n, group.by = 'groups') )) )) 
 write.table(DEG, '7.DEG.xls', sep = '\t', row.names = F, quote = F)
-saveRDS(DEG, '7.DEG.rds')
+saveRDS(DEG, '3.DEG.rds')
+
+## 4. Cluster DEG ##
+mk = do.call(rbind, lapply(levels(Idents(obj)), function(i) 
+    Seurat.DEG(obj, pos = i, min.pct = .3, logfc = .5, max.cells.per.ident = 5e3) ))
+saveRDS(mk, '4.AllMarkers.rds')
