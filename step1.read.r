@@ -22,3 +22,10 @@ obj = subset(obj, nFeature_RNA > 200 & nCount_RNA > 1000 & nCount_RNA < 70000 & 
 obj = Seurat.Normalize(obj)
 obj = Seurat.Cluster(obj, group.by = 'samples')
 p   = DimPlot(obj, label = T) + theme(text = element_text(family = 'serif')); p
+
+## 3. DEG ##
+neg = 'Ctrl'
+DEG = do.call(rbind, lapply(neg, function(n) 
+  do.call(rbind, lapply(setdiff(unique(obj$groups), n), function(g) Seurat.DEG(obj, g, n, group.by = 'groups') )) )) 
+write.table(DEG, '7.DEG.xls', sep = '\t', row.names = F, quote = F)
+saveRDS(DEG, '7.DEG.rds')
